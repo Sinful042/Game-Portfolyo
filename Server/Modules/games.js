@@ -5,7 +5,6 @@ const gameScheme = new mongoose.Schema({
     type:String,
     releasedate:Date,
     description:String,
-    image:Buffer,
     createdAT:{
      type:Date,
      default:Date.now,

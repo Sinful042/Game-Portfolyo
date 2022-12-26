@@ -45,14 +45,14 @@ router.post("/CreateGames",(req,res)=>{
       name:req.body.name,
       type:req.body.type,
       releasedate:req.body.releasedate,
-      description:req.body.description,
-      images:req.body.images,
+      description:req.body.desc,
+      
     })
     game.save()
     res.json(game);
 });
 
-router.post("/allgames",(req,res)=>{
+router.get("/allgames",(req,res)=>{
     res.send(games);
 })
 
