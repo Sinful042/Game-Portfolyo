@@ -22,8 +22,8 @@ router.post("/register",(req,res)=>{
     
 });
 router.post("/login",(req,res)=>{
-    const {email,password} = req.body;
-    User.findOne({email},(err,user)=>{
+    const {username,password} = req.body;
+    User.findOne({username},(err,user)=>{
         if(err){
             return res.send({error:'hata oluştu'})
         }
@@ -53,7 +53,16 @@ router.post("/CreateGames",(req,res)=>{
 });
 
 router.get("/allgames",(req,res)=>{
-    res.send(games);
+      const query =games.find()
+      query.exec((err, veriler) => {
+        if (err) {
+          // Bir hata oluştuysa hata mesajını gönderin
+          res.send(err);
+        } else {
+          // Verileri gönderin
+          res.json(veriler);
+        }
+      });
 })
 
 router.put("/updateGames/:id",(req,res)=>{
