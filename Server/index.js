@@ -10,14 +10,32 @@ env.config();
 const app = express();
 app.use(bodyParser.json())
 app.use(cors());
-mongose.connect(process.env.CONNECTION_URL,(e)=>{
-   if(e){
-        console.log(e)
+
+const MongooseSingleton = (function () {
+    let instance;
+  
+    function createInstance() {
+      mongose.connect(process.env.CONNECTION_URL, (e) => {
+        if (e) {
+          console.log(e);
+        } else {
+          console.log("Connected DataBase");
+        }
+      });
     }
-    else{
-        console.log("Connected DataBase")
-    }
-})
+  
+    return {
+      getInstance: function () {
+        if (!instance) {
+          instance = createInstance();
+        }
+        return instance;
+      },
+    };
+  })();
+  
+  MongooseSingleton.getInstance();
+  
 
 //Hazırladığımız routerı kullanıyor
 app.use("/portfolyo",router)

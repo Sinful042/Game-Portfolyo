@@ -3,7 +3,7 @@ const User = require("../Modules/user")
 const games=require("../Modules/games");
 const Joi = require('joi');
 const nodemailer = require('nodemailer');
-
+const crypto = require('crypto');
 
 const router=express.Router();
 
@@ -95,9 +95,23 @@ router.get("/all-games",(req,res)=>{
       });
 })
 
-router.put("/update-password/:id",(req,res)=>{
-    res.send("Updateuser")
-})
+router.put("/update-password/:id", (req, res) => {
+  const { currentPassword, newPassWord } = req.body;
+  User.findById(req.params.id, (err, user) => {
+    if (err) {
+      return res.json(err);
+    }
+    if (currentPassword !== user.password) {
+      return res.json("Incorrect current password");
+    }
+    User.findByIdAndUpdate(req.params.id, { password: newPassword }, (err, user) => {
+      if (err) {
+        return res.json(err);
+      }
+      return res.json("Password successfully updated");
+    });
+  });
+});
 
 router.delete('/delete-games/:id',(req,res)=>{
     res.send("Kullanıcı silme işlemi")
@@ -110,7 +124,9 @@ const transporter = nodemailer.createTransport({
     }
   });
 
-
+  const generateRandomPassword = () => {
+    return crypto.randomBytes(16).toString('hex');
+  }
 
 const jwt = require('jsonwebtoken');
 
@@ -146,15 +162,32 @@ router.post('/reset-password',  async (req, res) => {
   });
 
 router.get('/reset-password/:id/:token', async(req,res)=>{
-    const{id,token}=req.params;
+    const{id,password}=req.params;
     console.log(req.params);
     
     const oldUser = await User.findOne({id});
     if(!oldUser){
         return res.json("Kullanıcı Bulunamadı");
     }
-
-    res.send("Reset PassWord is Done")
+    currentPassword=password
+    const newPassWord =generateRandomPassword();
+    link=
+    /*fetch(`http://localhost:5000/portfolyo/update-password/:id`,{
+        method:"PUT",
+        crossDomain:true,
+        headers:{
+          "Content-Type":"application/json",
+          Accept:"aplication/json",
+          "Access-Control-Allow-Origin":"*",
+        },
+        body:JSON.stringify({
+          newPassWord,
+          currentPassword
+        }),
+      })
+   */
+    
+    res.send(` New PassWord: ${newPassWord}`)
     
 })
 
